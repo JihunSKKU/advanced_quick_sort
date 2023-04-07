@@ -8,6 +8,8 @@
 #define MAX_ATTRIBUTE_KEY_LENGTH 10
 #define MAX_ATTRIBUTE_LENGTH 1000
 
+#define CLASSIFY 10
+
 typedef struct {
     char attribute[MAX_ATTRIBUTE_KEY_LENGTH + 1];
     int order;
@@ -153,22 +155,14 @@ int partition(key *key_attributes, int low, int high) {
 /* If the length of the key_attributes array is 10 or less, insertion_sort is used for sorting;
  * otherwise, ramdomized quick_sort is used for sorting. */
 void quick_sort(key *key_attributes, int low, int high) {
-    if(high - low + 1 <= 10) {
+    if(high - low + 1 <= CLASSIFY) {
         insertion_sort(key_attributes, low, high);
         return;
     }
     else if(low < high) {
         int pivot = partition(key_attributes, low, high);
-
-        if(pivot - low <= 10)
-            insertion_sort(key_attributes, low, pivot - 1);
-        else    
-            quick_sort(key_attributes, low, pivot - 1);
-
-        if(high - pivot <= 10)
-            insertion_sort(key_attributes, pivot + 1, high);
-        else
-            quick_sort(key_attributes, pivot + 1, high);
+        quick_sort(key_attributes, low, pivot - 1);
+        quick_sort(key_attributes, pivot + 1, high);
     }
 }
 
@@ -182,7 +176,10 @@ int main() {
     read_file(&num_objects, &key_attributes, &attributes);
 
     // Sorting
+    clock_t start = clock();
     quick_sort(key_attributes, 0, num_objects - 1);
+    clock_t end = clock();
+    printf("Time: %d ms\n", end - start);
 
     // Write sorting attributes in hw1_output.txt
     write_file(num_objects, key_attributes, attributes);
