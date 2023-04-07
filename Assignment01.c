@@ -159,8 +159,16 @@ void quick_sort(key *key_attributes, int low, int high) {
     }
     else if(low < high) {
         int pivot = partition(key_attributes, low, high);
-        quick_sort(key_attributes, low, pivot - 1);
-        quick_sort(key_attributes, pivot + 1, high);
+
+        if(pivot - low <= 10)
+            insertion_sort(key_attributes, low, pivot - 1);
+        else    
+            quick_sort(key_attributes, low, pivot - 1);
+
+        if(high - pivot <= 10)
+            insertion_sort(key_attributes, pivot + 1, high);
+        else
+            quick_sort(key_attributes, pivot + 1, high);
     }
 }
 
