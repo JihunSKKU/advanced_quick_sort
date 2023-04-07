@@ -13,7 +13,7 @@ typedef struct {
     int order;
 } key;
 
-void read_file(int *num_objects, key *key_attributes, char **attributes) {
+void read_file(int *num_objects, key **key_attributes, char ***attributes) {
     // Open input file for reading
     FILE *input_file = fopen("hw1_input.txt", "r");
     if(!input_file) {
@@ -44,10 +44,10 @@ void read_file(int *num_objects, key *key_attributes, char **attributes) {
 
     // Variable declaration
     int i; // Loop variable
-    key_attributes = (key *)malloc(sizeof(key) * (*num_objects));
-    attributes = (char **)malloc(sizeof(char *) * (*num_objects));
+    *key_attributes = (key *)malloc(sizeof(key) * (*num_objects));
+    *attributes = (char **)malloc(sizeof(char *) * (*num_objects));
     for(i = 0; i < *num_objects; i++)
-        attributes[i] = (char *)malloc(sizeof(char) * (MAX_ATTRIBUTE_KEY_LENGTH 
+        (*attributes)[i] = (char *)malloc(sizeof(char) * (MAX_ATTRIBUTE_KEY_LENGTH 
                                 + attribute_type * MAX_ATTRIBUTE_LENGTH + MAX_ATTRIBUTE_TYPE));
     
     int key_index; // Index of (i)th key_attributes
@@ -66,14 +66,14 @@ void read_file(int *num_objects, key *key_attributes, char **attributes) {
                 key_check++;
             
             else if(key_check == key_attribute_index)
-                key_attributes[i].attribute[key_index++] = cp;
+                (*key_attributes)[i].attribute[key_index++] = cp;
 
-            attributes[i][attribute_index++] = cp;
+            (*attributes)[i][attribute_index++] = cp;
         }
 
-        key_attributes[i].attribute[key_index] = '\0';
-        key_attributes[i].order = i;
-        attributes[i][attribute_index] = '\0';
+        (*key_attributes)[i].attribute[key_index] = '\0';
+        (*key_attributes)[i].order = i;
+        (*attributes)[i][attribute_index] = '\0';
     }
 
     // Close input file
@@ -155,28 +155,18 @@ int main() {
     key *key_attributes;
     char **attributes;
 
-    read_file(&num_objects, key_attributes, attributes);
-    int i;
+    read_file(&num_objects, &key_attributes, &attributes);
 
-    key_attributes = (key *)malloc(sizeof(key) * num_objects);
-    attributes = (char **)malloc(sizeof(char *) * num_objects);
-    for(i = 0; i < num_objects; i++)
-        attributes[i] = (char *)malloc(sizeof(char) * (MAX_ATTRIBUTE_KEY_LENGTH 
-                                + 2 * MAX_ATTRIBUTE_LENGTH + MAX_ATTRIBUTE_TYPE));
-    
-    printf("attributes size: %d\n", sizeof(attributes[0]));
-
-    puts("");
-    for(i = 0; i < num_objects; i++) {
-        printf("order: %d / key: %s\n", key_attributes[i].order, key_attributes[i].attribute);
-        printf("%s\n", attributes[i]);
-    }
 
     // Sorting
     quick_sort(key_attributes, 0, num_objects - 1);
 
-
-    
+    int i;
+    puts("");
+    for(i = 0; i < num_objects; i++) {
+        printf("order: %4d / key: %s\n", key_attributes[i].order, key_attributes[i].attribute);
+        // printf("%s\n", attributes[i]);
+    }
 
     // Open output file
     FILE *output_file = fopen("hw1_output.txt", "w");

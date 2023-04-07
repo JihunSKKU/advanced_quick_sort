@@ -37,17 +37,15 @@ int main() {
     fprintf(fp, "%d\n$\n", n);
     
     int key = rand() % t;
-    
-    // rand_string(attr_names, MAX_M);
-    rand_string(attr_names, rand() % MAX_M + 1);
-    fprintf(fp, "%s", attr_names);
-    if(key == 0)
-        fprintf(fp, "*");
 
-    for (j = 1; j < t; j++) {
+    for (j = 0; j < t; j++) {
         // rand_string(attr_names, MAX_M);
         rand_string(attr_names, rand() % MAX_M + 1);
-        fprintf(fp, ":%s", attr_names);
+        if(j == 0)
+            fprintf(fp, "%s", attr_names);
+        else
+            fprintf(fp, ":%s", attr_names);
+
         if(key == j)
             fprintf(fp, "*");
     }
@@ -55,15 +53,7 @@ int main() {
     
     char random_attr[MAX_VAL + 1];
     for(i=0; i<n; i++) {
-        if(key == 0)
-            // rand_string(random_attr, MAX_KEY_LEN);
-            rand_string(random_attr, rand() % MAX_KEY_LEN + 1);
-        else
-            // rand_string(random_attr, MAX_VAL);
-            rand_string(random_attr, rand() % MAX_VAL + 1);
-        fprintf(fp, "%s", random_attr);
-
-        for(j=1; j<t; j++) {
+        for(j = 0; j < t; j++) {
             if(key == j)
                 // rand_string(random_attr, MAX_KEY_LEN);
                 rand_string(random_attr, rand() % MAX_KEY_LEN + 1);
@@ -71,7 +61,10 @@ int main() {
                 // rand_string(random_attr, MAX_VAL);
                 rand_string(random_attr, rand() % MAX_VAL + 1);
 
-            fprintf(fp, ":%s", random_attr);
+            if(j == 0)
+                fprintf(fp, "%s", random_attr);
+            else
+                fprintf(fp, ":%s", random_attr);
         }
         fprintf(fp, "\n");
     }
