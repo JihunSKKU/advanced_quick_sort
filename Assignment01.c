@@ -162,11 +162,6 @@ int main() {
     quick_sort(key_attributes, 0, num_objects - 1);
 
     int i;
-    puts("");
-    for(i = 0; i < num_objects; i++) {
-        printf("order: %4d / key: %s\n", key_attributes[i].order, key_attributes[i].attribute);
-        // printf("%s\n", attributes[i]);
-    }
 
     // Open output file
     FILE *output_file = fopen("hw1_output.txt", "w");
