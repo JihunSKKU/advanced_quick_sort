@@ -13,6 +13,23 @@ typedef struct {
     int order;
 } key;
 
+void write_file(int num_objects, key *key_attributes, char **attributes) {
+    // Open output file
+    FILE *output_file = fopen("hw1_output.txt", "w");
+    if(!output_file) {
+        fprintf(stderr, "File open Error: %s\n", output_file);
+        exit(1);
+    }
+
+    int i; // Loop variable
+    for(i = 0; i < num_objects - 1; i++)
+        fprintf(output_file, "%s\n", attributes[key_attributes[i].order]);
+    fprintf(output_file, "%s", attributes[key_attributes[i].order]);
+
+    // Close output file
+    fclose(output_file);
+}
+
 /* Function that swaps key1 and key2 */
 void swap(key *key1, key *key2) {
     key temp;
@@ -149,20 +166,12 @@ int main() {
     // Sorting
     quick_sort(key_attributes, 0, num_objects - 1);
 
+    
+    for(i=0;i<num_objects;i++)
+        printf("order : %d / key : %s\n", key_attributes[i].order, key_attributes[i].attribute);
 
-    // Open output file
-    FILE *output_file = fopen("hw1_output.txt", "w");
-    if(!output_file) {
-        fprintf(stderr, "File open Error: %s\n", output_file);
-        return 1;
-    }
-
-    for(i = 0; i < num_objects - 1; i++)
-        fprintf(output_file, "%s\n", attributes[key_attributes[i].order]);
-    fprintf(output_file, "%s", attributes[key_attributes[i].order]);
-
-    // Close output file
-    fclose(output_file);
+    // Write sorting attributes in hw1_output.txt
+    write_file(num_objects, key_attributes, attributes);
 
     // Memory allocated
     free(key_attributes);
